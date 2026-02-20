@@ -2,23 +2,24 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>FutureToday — Реферальная программа</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Реферальная программа — CareerDay</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Mulish:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #0d0f14;
-    --surface: #161a23;
-    --card: #1c2130;
-    --accent: #f7c843;
-    --accent2: #ff6b35;
-    --text: #f0f2f7;
-    --muted: #7a84a0;
-    --border: rgba(255,255,255,0.07);
-    --radius: 16px;
+    --bg: #F4F4F4;
+    --orange: #F46D00;
+    --orange-dark: #d45e00;
+    --orange-light: rgba(244, 109, 0, 0.10);
+    --white: #FFFFFF;
+    --text: #333333;
+    --muted: #888888;
+    --border: #E8E8E8;
+    --radius: 14px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.07);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,472 +27,414 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Mulish', sans-serif;
+    font-family: 'Golos Text', sans-serif;
     min-height: 100vh;
-    padding: 0 0 40px;
-    overflow-x: hidden;
+    padding-bottom: 40px;
   }
 
-  /* Header */
   .header {
-    background: linear-gradient(135deg, #1a1f30 0%, #0d1020 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 20px 20px 24px;
-    position: relative;
-    overflow: hidden;
+    background: var(--white);
+    box-shadow: var(--shadow);
+    padding: 16px 20px;
+    display: flex; align-items: center; gap: 12px;
+    position: sticky; top: 0; z-index: 10;
   }
-  .header::before {
-    content: '';
-    position: absolute;
-    top: -40px; right: -40px;
-    width: 200px; height: 200px;
-    background: radial-gradient(circle, rgba(247,200,67,0.12) 0%, transparent 70%);
-    pointer-events: none;
+  .header-icon {
+    width: 40px; height: 40px;
+    background: var(--orange); border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
   }
-  .header-logo {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.15em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .header-title {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 1.3;
-    color: var(--text);
-  }
-  .header-sub {
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 6px;
-  }
+  .header-title { font-size: 17px; font-weight: 700; line-height: 1.2; }
+  .header-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-  /* Main content area */
   .content {
     padding: 20px 16px 0;
+    max-width: 520px; margin: 0 auto;
   }
 
-  /* States */
-  .state {
-    display: none;
-  }
-  .state.active {
-    display: block;
-    animation: fadeUp 0.4s ease both;
-  }
-
+  .state { display: none; }
+  .state.active { display: block; animation: fadeUp 0.3s ease both; }
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
+    from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* Loading */
+  .card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 24px 20px;
+  }
+  .card h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .card p { font-size: 14px; color: var(--muted); margin-bottom: 20px; line-height: 1.55; }
+
+  .input-group { margin-bottom: 4px; }
+  .input-group input {
+    width: 100%;
+    border: 2px solid var(--border); border-radius: 10px;
+    padding: 13px 16px;
+    font-family: 'Golos Text', sans-serif; font-size: 15px; color: var(--text);
+    background: var(--bg); outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .input-group input:focus { border-color: var(--orange); background: var(--white); }
+  .input-group input::placeholder { color: #bbb; }
+  .input-group input.invalid { border-color: #e03e3e; }
+  .input-hint { font-size: 12px; color: #e03e3e; margin: 5px 0 14px 4px; min-height: 16px; }
+
+  .btn {
+    border: none; border-radius: 10px; padding: 14px;
+    font-family: 'Golos Text', sans-serif; font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: background 0.15s, transform 0.1s;
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--orange); color: #fff; width: 100%; }
+  .btn-primary:hover { background: var(--orange-dark); }
+  .btn-ghost {
+    background: var(--orange-light); color: var(--orange);
+    padding: 10px 18px; margin-top: 14px; font-size: 14px;
+  }
+  .btn-ghost:hover { background: rgba(244,109,0,0.18); }
+
   .loader-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    gap: 16px;
+    display: flex; flex-direction: column;
+    align-items: center; padding: 60px 0; gap: 14px;
   }
   .spinner {
-    width: 40px; height: 40px;
-    border: 3px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    width: 36px; height: 36px;
+    border: 3px solid var(--border); border-top-color: var(--orange);
+    border-radius: 50%; animation: spin 0.7s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .loader-text {
-    font-size: 14px;
-    color: var(--muted);
-  }
+  .loader-text { font-size: 14px; color: var(--muted); }
 
-  /* Not found */
-  .not-found {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 28px 20px;
-    text-align: center;
-  }
-  .not-found .icon { font-size: 40px; margin-bottom: 12px; }
-  .not-found h2 {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 10px;
-  }
-  .not-found p {
-    font-size: 14px;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-  .not-found code {
-    background: rgba(247,200,67,0.15);
-    color: var(--accent);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: monospace;
-  }
+  .not-found { text-align: center; padding: 6px 0 2px; }
+  .not-found .nf-icon { font-size: 46px; margin-bottom: 14px; }
+  .not-found h2 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .not-found p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+  .events-meta { margin-bottom: 16px; }
+  .events-meta h2 { font-size: 20px; font-weight: 700; }
+  .events-meta p { font-size: 13px; color: var(--muted); margin-top: 3px; }
 
   /* Event card */
   .event-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 16px;
-    overflow: hidden;
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow); margin-bottom: 16px; overflow: hidden;
   }
-  .event-header {
-    background: linear-gradient(90deg, rgba(247,200,67,0.1) 0%, transparent 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  .event-head {
+    background: var(--orange); padding: 14px 18px;
+    display: flex; align-items: center; gap: 10px;
   }
-  .event-badge {
-    background: var(--accent);
-    color: #0d0f14;
-    font-family: 'Unbounded', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 10px;
-    border-radius: 6px;
-    letter-spacing: 0.05em;
+  .event-head-icon { font-size: 22px; }
+  .event-head-info { flex: 1; min-width: 0; }
+  .event-head-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 2px;
   }
-  .event-name {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text);
+  .event-head-name {
+    font-size: 16px; font-weight: 700; color: #fff;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .event-id-chip {
+    background: rgba(255,255,255,0.2); color: #fff;
+    font-size: 11px; font-weight: 600; padding: 4px 9px; border-radius: 6px; flex-shrink: 0;
   }
 
-  /* Referral link block */
-  .ref-section {
-    padding: 16px;
-    border-bottom: 1px solid var(--border);
-  }
+  .section { padding: 16px 18px; border-bottom: 1px solid var(--border); }
+  .section:last-child { border-bottom: none; }
   .section-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 10px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
   }
-  .ref-link-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+
+  .ref-box {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 11px 14px; display: flex; align-items: center; gap: 10px;
   }
   .ref-link-text {
-    flex: 1;
-    font-size: 12px;
-    color: var(--accent);
-    word-break: break-all;
-    line-height: 1.5;
-    font-family: monospace;
+    flex: 1; font-size: 12px; color: var(--orange);
+    word-break: break-all; line-height: 1.5; font-family: monospace;
   }
   .copy-btn {
-    flex-shrink: 0;
-    background: var(--accent);
-    color: #0d0f14;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-family: 'Mulish', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 0.15s, background 0.15s;
-    white-space: nowrap;
+    flex-shrink: 0; background: var(--orange); color: #fff;
+    border: none; border-radius: 8px; padding: 7px 12px;
+    font-family: 'Golos Text', sans-serif; font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: background 0.15s, transform 0.1s; white-space: nowrap;
   }
   .copy-btn:active { transform: scale(0.95); }
-  .copy-btn.copied {
-    background: #4ade80;
-  }
+  .copy-btn.copied { background: #4ade80; }
 
-  /* Share button */
   .share-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    margin-top: 10px;
-    background: rgba(247,200,67,0.1);
-    border: 1px solid rgba(247,200,67,0.25);
-    border-radius: 10px;
-    padding: 10px;
-    color: var(--accent);
-    font-family: 'Mulish', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    width: 100%; margin-top: 10px;
+    background: var(--orange-light); border: 1px solid rgba(244,109,0,0.25);
+    border-radius: 10px; padding: 10px;
+    color: var(--orange); font-family: 'Golos Text', sans-serif;
+    font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s;
   }
-  .share-btn:active { background: rgba(247,200,67,0.2); }
+  .share-btn:active { background: rgba(244,109,0,0.2); }
 
-  /* Progress / stats block */
-  .stats-section {
-    padding: 16px;
-  }
-  .invited-count {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    margin-bottom: 14px;
-  }
-  .invited-num {
-    font-family: 'Unbounded', sans-serif;
-    font-size: 36px;
-    font-weight: 700;
-    color: var(--accent);
-    line-height: 1;
-  }
-  .invited-label {
-    font-size: 14px;
-    color: var(--muted);
-  }
+  .invited-row { display: flex; align-items: baseline; gap: 6px; margin-bottom: 14px; }
+  .invited-num { font-size: 36px; font-weight: 700; color: var(--orange); line-height: 1; }
+  .invited-label { font-size: 14px; color: var(--muted); }
 
-  /* Progress bar */
-  .progress-wrap {
-    margin-bottom: 16px;
-  }
   .progress-track {
-    background: var(--surface);
-    border-radius: 99px;
-    height: 8px;
-    position: relative;
-    overflow: hidden;
+    background: var(--bg); border-radius: 99px; height: 8px; overflow: hidden; margin-bottom: 8px;
   }
   .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 99px;
-    transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    height: 100%; background: linear-gradient(90deg, var(--orange), #ff9a3c);
+    border-radius: 99px; width: 0%; transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-  .progress-milestones {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 6px;
-  }
+  .progress-milestones { display: flex; justify-content: space-between; margin-bottom: 16px; }
   .milestone {
-    font-size: 11px;
-    color: var(--muted);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
+    font-size: 11px; color: var(--muted);
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
   }
-  .milestone.reached { color: var(--accent); }
-  .milestone-dot {
-    width: 6px; height: 6px;
-    background: var(--border);
-    border-radius: 50%;
-  }
-  .milestone.reached .milestone-dot { background: var(--accent); }
+  .milestone.reached { color: var(--orange); font-weight: 600; }
+  .milestone-dot { width: 6px; height: 6px; background: var(--border); border-radius: 50%; }
+  .milestone.reached .milestone-dot { background: var(--orange); }
 
-  /* Bonuses text */
-  .bonuses-text {
-    font-size: 13px;
-    line-height: 1.75;
-    color: var(--text);
-    white-space: pre-wrap;
-  }
-  .bonuses-text .line {
-    display: block;
-    padding: 4px 0;
-  }
+  .bonus-text { font-size: 13px; line-height: 1.75; color: var(--text); }
 
-  /* Error */
-  .error-box {
-    background: rgba(255,80,80,0.1);
-    border: 1px solid rgba(255,80,80,0.2);
-    border-radius: var(--radius);
-    padding: 20px;
-    text-align: center;
-    color: #ff8080;
-    font-size: 14px;
+  .perforation {
+    position: relative; border-top: 2px dashed var(--border); margin: 0 18px;
+  }
+  .perforation::before, .perforation::after {
+    content: ''; position: absolute; width: 20px; height: 20px;
+    background: var(--bg); border-radius: 50%; top: 50%; transform: translateY(-50%);
+  }
+  .perforation::before { left: -28px; }
+  .perforation::after  { right: -28px; }
+
+  .error-card {
+    background: #fff5f5; border: 1px solid #ffd6d6;
+    border-radius: var(--radius); padding: 20px;
+    color: #c0392b; font-size: 14px; text-align: center;
   }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-logo">FutureToday</div>
-  <div class="header-title">Реферальная программа</div>
-  <div class="header-sub">Приглашай друзей — получай призы</div>
+  <div class="header-icon">🎁</div>
+  <div>
+    <div class="header-title">Реферальная программа</div>
+    <div class="header-sub">Приглашай друзей — получай призы</div>
+  </div>
 </div>
 
 <div class="content">
 
+  <!-- Search -->
+  <div class="state active" id="state-search">
+    <div class="card">
+      <h2>Найти мою программу</h2>
+      <p>Введи email, который использовал при регистрации на CareerDay.</p>
+      <div class="input-group">
+        <input type="email" id="email-input" placeholder="example@mail.ru"
+               autocomplete="email" inputmode="email"
+               onkeydown="if(event.key==='Enter') doSearch()" />
+      </div>
+      <div class="input-hint" id="email-hint"></div>
+      <button class="btn btn-primary" onclick="doSearch()">🔍 Найти</button>
+    </div>
+  </div>
+
   <!-- Loading -->
-  <div class="state active" id="state-loading">
+  <div class="state" id="state-loading">
     <div class="loader-wrap">
       <div class="spinner"></div>
-      <div class="loader-text">Загружаем твои данные...</div>
+      <div class="loader-text">Загружаем данные...</div>
     </div>
   </div>
 
   <!-- Not found -->
   <div class="state" id="state-notfound">
-    <div class="not-found">
-      <div class="icon">🔍</div>
-      <h2>Регистрация не найдена</h2>
-      <p>Мы не нашли тебя в базе.<br/>Обнови бот командой <code>/start</code> и попробуй снова.</p>
+    <div class="card">
+      <div class="not-found">
+        <div class="nf-icon">🔍</div>
+        <h2>Регистрация не найдена</h2>
+        <p>По этому email мы ничего не нашли.<br/>Проверь адрес или обнови бот командой <b>/start</b>.</p>
+      </div>
+      <button class="btn btn-ghost" onclick="goBack()">← Попробовать снова</button>
     </div>
   </div>
 
   <!-- Error -->
   <div class="state" id="state-error">
-    <div class="error-box" id="error-msg">Что-то пошло не так. Попробуй позже.</div>
+    <div class="error-card" id="error-msg">Что-то пошло не так. Попробуй позже.</div>
+    <button class="btn btn-ghost" onclick="goBack()">← Назад</button>
   </div>
 
-  <!-- Events list -->
+  <!-- Events -->
   <div class="state" id="state-events">
+    <div class="events-meta">
+      <h2>Твоя реферальная программа</h2>
+      <p id="events-sub"></p>
+    </div>
     <div id="events-container"></div>
+    <button class="btn btn-ghost" onclick="goBack()">← Искать по другому email</button>
   </div>
 
 </div>
 
 <script>
 // =====================================================
-// КОНФИГУРАЦИЯ — замените на реальный URL функции
+// КОНФИГУРАЦИЯ — замени на свой URL Gateway
 // =====================================================
 const FUNCTION_URL = "https://d5dk04fviigibe7grbeh.ql6wied2.apigw.yandexcloud.net/referral";
- 
 // =====================================================
 
-const tg = window.Telegram?.WebApp;
-if (tg) {
-  tg.ready();
-  tg.expand();
-}
+const CD_NAMES = {
+  "ПФМ":  "ProFinance Москва",
+  "НИТМ": "Найди IT Москва",
+  "ТСМ":  "TechnoCareer",
+  "ПФС":  "ProFinance Санкт-Петербург",
+  "НИТС": "Найди IT Санкт-Петербург",
+  "НИТН": "Найди IT Новосибирск",
+  "ДОВ":  "День открытых вакансий",
+  "КЗКФ": "FutureToday Career Forum",
+};
+const CD_ICONS = {
+  "ПФМ": "💼", "НИТМ": "💻", "ТСМ": "🚀",
+  "ПФС": "💼", "НИТС": "💻", "НИТН": "💻",
+  "ДОВ": "🏢", "КЗКФ": "🌟",
+};
 
-function getTgId() {
-  return tg?.initDataUnsafe?.user?.id?.toString() || null;
-}
+const tg = window.Telegram?.WebApp;
+if (tg) { tg.ready(); tg.expand(); }
 
 function setState(id) {
   document.querySelectorAll('.state').forEach(el => el.classList.remove('active'));
   document.getElementById('state-' + id).classList.add('active');
 }
 
+function goBack() {
+  document.getElementById('email-input').value = '';
+  document.getElementById('email-hint').textContent = '';
+  document.getElementById('email-input').classList.remove('invalid');
+  setState('search');
+}
+
+function isValidEmail(e) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e.trim());
+}
+
 function copyToClipboard(text, btn) {
   navigator.clipboard.writeText(text).then(() => {
     const orig = btn.textContent;
-    btn.textContent = "Скопировано ✓";
+    btn.textContent = '✓ Скопировано';
     btn.classList.add('copied');
-    setTimeout(() => {
-      btn.textContent = orig;
-      btn.classList.remove('copied');
-    }, 2000);
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
   });
 }
 
-function shareLink(link, careerday) {
+function shareLink(link, cdName) {
+  const text = `Иду на CareerDay ${cdName} от FutureToday! Регистрируйся по моей ссылке 🚀`;
   if (tg) {
-    tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(`Иду на CareerDay ${careerday} от FutureToday! Регистрируйся по моей ссылке 🚀`)}`);
+    tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`);
   } else {
     window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}`, '_blank');
   }
 }
 
-function getProgressWidth(count) {
-  if (count >= 5) return 100;
-  return Math.round((count / 5) * 100);
+function pluralInvited(n) {
+  if (n === 1) return 'друг приглашён';
+  if (n >= 2 && n <= 4) return 'друга приглашено';
+  return 'друзей приглашено';
 }
 
 function renderEvent(ev) {
-  const { careerday, ref_link, invited_count, referral_text } = ev;
+  const { careerday, row_id, ref_link, invited_count, referral_text } = ev;
+  const name = CD_NAMES[careerday] || careerday;
+  const icon = CD_ICONS[careerday] || '🎫';
+  const pct = Math.min(Math.round((invited_count / 5) * 100), 100);
+  const m3 = invited_count >= 3;
+  const m5 = invited_count >= 5;
+  const fillId = `fill-${row_id}`;
 
   const card = document.createElement('div');
   card.className = 'event-card';
-
-  const headerHTML = `
-    <div class="event-header">
-      <span class="event-badge">${careerday}</span>
-      <span class="event-name">CareerDay</span>
+  card.innerHTML = `
+    <div class="event-head">
+      <span class="event-head-icon">${icon}</span>
+      <div class="event-head-info">
+        <div class="event-head-label">CareerDay</div>
+        <div class="event-head-name">${name}</div>
+      </div>
+      <div class="event-id-chip">#${row_id}</div>
     </div>
-  `;
 
-  const refHTML = ref_link ? `
-    <div class="ref-section">
+    ${ref_link ? `
+    <div class="section">
       <div class="section-label">Твоя реферальная ссылка</div>
-      <div class="ref-link-box">
+      <div class="ref-box">
         <span class="ref-link-text">${ref_link}</span>
         <button class="copy-btn" onclick="copyToClipboard('${ref_link}', this)">Копировать</button>
       </div>
-      <button class="share-btn" onclick="shareLink('${ref_link}', '${careerday}')">
-        <span>✈️</span> Поделиться в Telegram
+      <button class="share-btn" onclick="shareLink('${ref_link}', '${name}')">
+        ✈️ Поделиться в Telegram
       </button>
     </div>
-  ` : '';
+    ` : ''}
 
-  const pct = getProgressWidth(invited_count);
-  const m3 = invited_count >= 3;
-  const m5 = invited_count >= 5;
+    <div class="perforation"></div>
 
-  const statsHTML = `
-    <div class="stats-section">
+    <div class="section">
       <div class="section-label">Статистика</div>
-      <div class="invited-count">
+      <div class="invited-row">
         <span class="invited-num">${invited_count}</span>
-        <span class="invited-label">${invited_count === 1 ? 'друг приглашён' : invited_count >= 2 && invited_count <= 4 ? 'друга приглашено' : 'друзей приглашено'}</span>
+        <span class="invited-label">${pluralInvited(invited_count)}</span>
       </div>
-      <div class="progress-wrap">
-        <div class="progress-track">
-          <div class="progress-fill" id="fill-${careerday}" style="width:0%"></div>
+      <div class="progress-track">
+        <div class="progress-fill" id="${fillId}"></div>
+      </div>
+      <div class="progress-milestones">
+        <div class="milestone ${m3 ? 'reached' : ''}">
+          <div class="milestone-dot"></div>
+          <span>3 🍕</span>
         </div>
-        <div class="progress-milestones">
-          <div class="milestone ${m3 ? 'reached' : ''}">
-            <div class="milestone-dot"></div>
-            <span>3 🍕</span>
-          </div>
-          <div class="milestone ${m5 ? 'reached' : ''}">
-            <div class="milestone-dot"></div>
-            <span>5 💵</span>
-          </div>
-          <div class="milestone">
-            <div class="milestone-dot"></div>
-            <span>🏆</span>
-          </div>
+        <div class="milestone ${m5 ? 'reached' : ''}">
+          <div class="milestone-dot"></div>
+          <span>5 💵</span>
+        </div>
+        <div class="milestone">
+          <div class="milestone-dot"></div>
+          <span>🏆</span>
         </div>
       </div>
-      <div class="bonuses-text">${referral_text.replace(/\n/g, '<br/>')}</div>
+      <div class="bonus-text">${referral_text.replace(/\n/g, '<br/>')}</div>
     </div>
   `;
 
-  card.innerHTML = headerHTML + refHTML + statsHTML;
-  return { card, fillId: `fill-${careerday}`, pct };
+  return { card, fillId, pct };
 }
 
-async function loadData() {
-  const tgId = getTgId();
+async function doSearch() {
+  const input = document.getElementById('email-input');
+  const hint = document.getElementById('email-hint');
+  const email = input.value.trim();
 
-  // Для локальной отладки без Telegram — раскомментируй строку ниже:
-  // const tgId = "123456789";
-
-  if (!tgId) {
-    setState('error');
-    document.getElementById('error-msg').textContent = 'Не удалось получить Telegram ID. Открой приложение через бот.';
+  if (!email) {
+    hint.textContent = 'Введи email';
+    input.classList.add('invalid');
+    input.focus();
     return;
   }
+  if (!isValidEmail(email)) {
+    hint.textContent = 'Введи корректный email';
+    input.classList.add('invalid');
+    input.focus();
+    return;
+  }
+  hint.textContent = '';
+  input.classList.remove('invalid');
+
+  setState('loading');
 
   try {
-    const url = `${FUNCTION_URL}?tg_id=${encodeURIComponent(tgId)}`;
-    const resp = await fetch(url);
+    const resp = await fetch(`${FUNCTION_URL}?email=${encodeURIComponent(email)}`);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     const data = await resp.json();
 
@@ -501,17 +444,21 @@ async function loadData() {
     }
 
     const container = document.getElementById('events-container');
+    container.innerHTML = '';
     const fills = [];
 
-    for (const ev of data.events) {
+    data.events.forEach(ev => {
       const { card, fillId, pct } = renderEvent(ev);
       container.appendChild(card);
       fills.push({ fillId, pct });
-    }
+    });
+
+    const n = data.events.length;
+    document.getElementById('events-sub').textContent =
+      n === 1 ? 'Найдено 1 мероприятие' : `Найдено мероприятий: ${n}`;
 
     setState('events');
 
-    // Анимируем прогресс-бары после рендера
     requestAnimationFrame(() => {
       setTimeout(() => {
         fills.forEach(({ fillId, pct }) => {
@@ -522,12 +469,14 @@ async function loadData() {
     });
 
   } catch (e) {
-    setState('error');
     document.getElementById('error-msg').textContent = 'Ошибка загрузки: ' + e.message;
+    setState('error');
   }
 }
 
-loadData();
+window.addEventListener('load', () => {
+  setTimeout(() => document.getElementById('email-input').focus(), 200);
+});
 </script>
 </body>
 </html>
