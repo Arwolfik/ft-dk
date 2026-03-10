@@ -383,7 +383,7 @@ function legacyCopy(text) {
 
 // ─── Share ────────────────────────────────────────────────────────────────────
 function shareLink(link, cdName) {
-  const text = `Иду на CareerDay ${cdName} от FutureToday! Регистрируйся по моей ссылке 🚀`;
+  const text = `Иду на День Карьеры ${cdName} от FutureToday! Регистрируйся по моей ссылке 🚀`;
 
   if (platform.isVK) {
     // Сначала пробуем нативный шаринг VK
@@ -407,7 +407,7 @@ function shareLink(link, cdName) {
 
   // Plain browser fallback
   if (navigator.share) {
-    navigator.share({ title: `CareerDay ${cdName}`, text, url: link }).catch(() => {});
+    navigator.share({ title: `День Карьеры ${cdName}`, text, url: link }).catch(() => {});
   } else {
     window.open(
       `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(text)}`,
